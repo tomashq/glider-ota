@@ -1,3 +1,5 @@
+const _ = require('lodash');
+
 const ERRORS={
     REQUEST_TIMEOUT:500,
     INVALID_METHOD:'INVALID_METHOD',
@@ -75,6 +77,49 @@ function getRawBodyFromRequest(request) {
         })
     });
 }
+/**
+ * Quickly check an Axios response from a Hotel search query.
+ * See if response contains data property, and check that key properties are defined.
+ *
+ * @param response
+ *
+ * @returns {boolean} True is all is OK. False if something is missing.
+ */
+function dirtyAggregatorResponseValidator(response) {
+    if (!response || !response.data || (typeof response.data !== 'object')) {
+        return false
+    }
+    return true;
+}
 
+/**
+ * Combines 2 Axios responses from Hotel search queries. Only combine if both
+ * responses are potentially populated with data.
+ *
+ * @param responses
+ * @param propsToMerge
+ *
+ * @returns {response} The merged response.
+ */
+function mergeAggregatorResponse(responsesToMerge) {
+    const response = { data: {} };
+    if(!responsesToMerge)
+        return response;
 
-module.exports={ERRORS,createErrorResponse,sendErrorResponse,getRawBodyFromRequest, GliderError}
+    const propsToMerge = ['accommodations', 'pricePlans', 'offers', 'passengers', 'itineraries']
+
+    responsesToMerge.forEach(responseToMerge=>{
+        let isValid = dirtyAggregatorResponseValidator(responseToMerge);
+        if(!isValid)
+            console.log('Not valid:');
+        if(isValid){
+            propsToMerge.forEach((prop) => {
+                response.data[prop] = {}
+                _.merge(response.data[prop], responseToMerge.data[prop])
+            })
+        }
+    })
+    return response
+}
+
+module.exports={ERRORS,createErrorResponse,sendErrorResponse,getRawBodyFromRequest, GliderError, mergeAggregatorResponse}

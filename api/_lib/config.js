@@ -15,6 +15,7 @@ const determineEnviroment = () => {
     }
 }
 const enviroment = determineEnviroment();
+console.log(`######ENVIRONMENT=>${enviroment}`);
 
 // Get an an environment variable
 const getConfigKey = (key) => {
@@ -47,8 +48,11 @@ const GLIDER_CONFIG =
         ORGID: getConfigKey('GLIDER_ORGID'),
     };
 
+const OTA_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nMIGEAgEAMBAGByqGSM49AgEGBSuBBAAKBG0wawIBAQQgGlndUv/Lgk6j/tNn38TkyksX1x/WBtfKpPfuobeeMfOhRANCAAQTs1fXwUkTZvGI12UPa+kvkibfpQHs5KTDb4arbDJJCZf0EtWhNdmT6Ieu/W8Yo4gUZRsKf0K+hZjjW8DeY5d5\n-----END PRIVATE KEY-----"
 const ORGID = {
     OTA_ORGID: getConfigKey('OTA_ORGID'),
+    OTA_PRIVATE_KEY: OTA_PRIVATE_KEY.replace(/\\n/g, '\n'),
+    GRAPH_URL:getConfigKey('GRAPH_URL')
 }
 
 const SIMARD_BASEURL = getConfigKey('SIMARD_BASEURL') || `https://${enviroment}.api.simard.io/api/v1`;
