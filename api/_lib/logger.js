@@ -107,4 +107,4 @@ const stringifyCircular = (obj, indent = null) => {
 };
 */
 
-module.exports = {createLogger, logRQRS}
+module.exports = {createLogger}
